@@ -105,7 +105,7 @@ function normalize(raw) {
     color: c.color || BOOK_COLORS[i % BOOK_COLORS.length],
     groupId: s.groups.some((g) => g.id === c.groupId) ? c.groupId : null,
     lock: c.lock && c.lock.hash && c.lock.salt ? c.lock : null,
-    students: (c.students || []).map((st) => ({ active: true, icon: ICONS[0], color: COLORS[0], ...st })),
+    students: (c.students || []).map((st) => ({ active: true, icon: ICONS[0], color: COLORS[0], gender: '', ...st })),
     records: c.records || {}, noClass: c.noClass || {}, dayNotes: c.dayNotes || {},
   }));
   if (!s.classes.some((c) => c.id === s.currentClassId)) s.currentClassId = s.classes[0].id;
@@ -234,7 +234,7 @@ export function addStudent(data) {
   const used = new Set(c.students.map((s) => s.icon));
   const icon = data.icon || ICONS.find((i) => !used.has(i)) || ICONS[c.students.length % ICONS.length];
   const color = data.color || COLORS[c.students.length % COLORS.length];
-  const s = { id: uid('s'), name: data.name.trim(), icon, color, seat: null, guardian: '', phone: '', notes: '', active: true, ...data, icon, color };
+  const s = { id: uid('s'), name: data.name.trim(), icon, color, gender: '', seat: null, guardian: '', phone: '', notes: '', active: true, ...data, icon, color };
   c.students.push(s);
   touch('roster');
   return s;
@@ -251,7 +251,7 @@ export function addStudents(names) {
     const i = c.students.length;
     c.students.push({
       id: uid('s'), name, icon: ICONS[(i * 7 + 1) % ICONS.length], color: COLORS[i % COLORS.length],
-      seat: null, guardian: '', phone: '', notes: '', active: true,
+      seat: null, gender: '', guardian: '', phone: '', notes: '', active: true,
     });
     added++;
   }
