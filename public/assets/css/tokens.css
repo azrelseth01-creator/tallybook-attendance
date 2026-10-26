@@ -1,0 +1,52 @@
+/* Design tokens. Change a colour here and it changes everywhere. */
+:root {
+  /* ink and paper */
+  --ink: #1b2559;
+  --ink-2: #4a5585;
+  --ink-3: #8a93bb;
+  --line: rgba(27, 37, 89, 0.14);
+  --line-strong: rgba(27, 37, 89, 0.28);
+  --paper: #fbfdff;
+  --paper-2: #eef3ff;
+  --rule: rgba(59, 110, 230, 0.15);
+  --margin: #ee5d6c;
+  --margin-x: 76px;
+  --pen: #2b4bd6;
+  --pen-dark: #1c36a8;
+  --hl: #ffe45c;
+
+  /* attendance statuses (never rely on colour alone: each also has a word and a letter) */
+  --c-P: #12935b;
+  --c-A: #d9384a;
+  --c-L: #d97706;
+  --c-E: #3d7be6;
+  --c-U: #c3cbe2;
+  --t-P: #e3f6ec;
+  --t-A: #fde7ea;
+  --t-L: #fdf0d9;
+  --t-E: #e4eefd;
+
+  /* type */
+  --display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --body: 'Schibsted Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+
+  --text-scale: 1;
+  --r-s: 6px;
+  --r-m: 10px;
+  --r-l: 16px;
+  --shadow: 0 1px 0 rgba(27, 37, 89, 0.12), 0 6px 18px -8px rgba(27, 37, 89, 0.25);
+  --ease: cubic-bezier(0.2, 0.9, 0.3, 1);
+
+  /* desk (the table the notebook sits on) */
+  --desk: #16214d;
+  --desk-deep: #0f1838;
+  --desk-line: rgba(255, 255, 255, 0.05);
+  --desk-ink: #dfe6ff;
+}
+:root[data-desk='forest'] { --desk: #14352f; --desk-deep: #0d2420; --desk-ink: #daf2e8; }
+:root[data-desk='plum'] { --desk: #2f1d47; --desk-deep: #20132f; --desk-ink: #eadcff; }
+:root[data-desk='graphite'] { --desk: #22252c; --desk-deep: #16181d; --desk-ink: #e6e8ee; }
+
+:root[data-density='compact'] { --pad: 0.75rem; --gap: 0.6rem; }
+:root[data-density='comfy'] { --pad: 1.1rem; --gap: 0.9rem; }

@@ -1,0 +1,17 @@
+/* Printing: the monthly register (Reports > Monthly register) on one landscape page. */
+@page { size: landscape; margin: 10mm; }
+body { background: #fff !important; overflow: visible !important; }
+.rail, .titlebar, .ruler, .dock, #vfx, #toasts, .sheet::after, .tabs, .sheet-bar, .doc-head, .muted.small { display: none !important; }
+.app { display: block; padding: 0; height: auto; max-width: none; }
+.sheet { box-shadow: none; border-radius: 0; overflow: visible; }
+.page { overflow: visible; padding: 0 !important; background: #fff !important; }
+.print-head { display: block !important; margin-bottom: 6mm; }
+.print-head h2 { font-size: 16pt; }
+.print-head p { margin: 0; color: #333; }
+.table-wrap { border: 0; overflow: visible; }
+.reg { max-height: none; }
+.register { font-size: 8pt; width: 100%; }
+.register th, .register td { border: 0.5pt solid #777; padding: 1.5pt 2pt; }
+.register th.nm { position: static; }
+.register thead th { position: static; }
+.register td.st-A, .register td.st-L, .register td.st-E, .register .tot, .register thead th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }

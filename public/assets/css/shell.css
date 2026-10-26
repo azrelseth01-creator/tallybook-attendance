@@ -1,0 +1,135 @@
+/* The frame: cover, binder tabs, the sheet of paper, ruler, title bar, music dock. */
+
+/* ---------- cover ---------- */
+.cover { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 1.5rem; perspective: 1600px; background: inherit; }
+.cover-book {
+  position: relative; width: min(440px, 100%); padding: 2.4rem 2rem 2rem; border-radius: 6px 18px 18px 6px;
+  background: linear-gradient(90deg, #0f1838 0 14px, #1d2d6b 14px 18px, #233584 18px);
+  color: #fff; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6), inset -8px 0 0 rgba(255, 255, 255, 0.05);
+  transform-origin: left center; text-align: center;
+}
+.cover-label { background: var(--paper); color: var(--ink); border-radius: 6px; padding: 1.4rem 1rem 1.2rem; margin: 0 0 1.6rem 0.8rem; box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25); transform: rotate(-1.2deg); border: 2px solid var(--ink); outline: 3px double var(--margin); outline-offset: -9px; }
+.cover-label h1 { font-size: 2.6rem; margin: 0.15rem 0; }
+.cover-class { font-family: var(--display); font-weight: 600; font-size: 1.1rem; margin: 0; }
+.cover-label .hand:empty { display: none; }
+#cvForm { margin-left: 0.8rem; display: grid; gap: 0.8rem; justify-items: center; }
+.pin-entry { display: flex; align-items: flex-end; gap: 0.45rem; }
+.pin-field { display: grid; gap: 0.3rem; text-align: left; font-weight: 600; font-size: 0.9rem; }
+.pin-field input { width: 15rem; text-align: center; letter-spacing: 0.12em; font-size: 1.15rem; padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.1); color: #fff; }
+.cover-hint { margin: -0.45rem 0 0; color: #ffe19b; font-size: 0.82rem; font-weight: 600; }
+.cover-error { min-height: 1.3em; margin: 0; color: #ffb3bb; font-weight: 600; }
+.cover.nope .cover-book { animation: shake 0.36s; }
+
+/* ---------- app frame ---------- */
+.app { height: 100dvh; display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 0; padding: 14px 16px 14px 0; max-width: 1560px; margin: 0 auto; }
+.rail { display: flex; flex-direction: column; gap: 10px; padding: 36px 0 0; align-items: flex-end; }
+.tab {
+  --tab: #ffd84a; position: relative; display: grid; justify-items: center; gap: 2px; width: 70px; padding: 11px 3px 9px;
+  background: var(--tab); color: var(--ink); text-decoration: none; font-weight: 700; font-size: 0.7rem;
+  border-radius: 10px 0 0 10px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.12), -3px 3px 8px rgba(0, 0, 0, 0.25);
+  transform: translateX(4px); transition: transform 0.18s var(--ease), width 0.18s var(--ease);
+}
+.tab:hover { transform: translateX(0); }
+.tab[aria-current='page'] { transform: translateX(0); width: 80px; z-index: 2; box-shadow: -3px 3px 8px rgba(0, 0, 0, 0.25); }
+.tab[aria-current='page']::after { content: ''; position: absolute; right: -2px; top: 0; bottom: 0; width: 4px; background: var(--tab); }
+
+.sheet {
+  position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0;
+  background: var(--paper); border-radius: 4px 14px 14px 4px; overflow: hidden;
+  box-shadow: 0 2px 0 #d5dcf0, 0 3px 0 rgba(0, 0, 0, 0.18), 0 30px 50px -20px rgba(0, 0, 0, 0.55);
+}
+/* binder holes punched through the paper */
+.sheet::after {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 34px; pointer-events: none; z-index: 5;
+  background: radial-gradient(circle at 16px 50%, var(--desk-deep) 0 7px, rgba(0, 0, 0, 0.25) 8px, transparent 9px) 0 70px / 34px 170px repeat-y;
+}
+
+.titlebar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.6rem 1rem 0.6rem 2.6rem; background: var(--paper); border-bottom: 1px solid var(--line); flex: none; }
+.file { display: flex; align-items: center; gap: 0.55rem; min-width: 0; font-weight: 600; }
+.file-ic { color: var(--pen); flex: none; }
+.file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--display); font-size: 1.02rem; }
+#tbClass { border: 1px solid var(--line-strong); border-radius: 6px; padding: 0.2rem 0.4rem; background: #fff; max-width: 11rem; }
+.tb-right { display: flex; align-items: center; gap: 0.35rem; flex: none; }
+.saved { font-size: 0.78rem; color: var(--ink-2); display: inline-flex; align-items: center; gap: 0.4rem; margin-right: 0.4rem; }
+.saved::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--c-P); }
+
+/* a word-processor ruler that doubles as a school ruler */
+.ruler {
+  position: relative; flex: none; height: 24px; background: var(--paper-2); border-bottom: 1px solid var(--line); overflow: hidden;
+  background-image:
+    linear-gradient(90deg, var(--ink-3) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-3) 1px, transparent 1px);
+  background-size: 80px 9px, 10px 5px; background-position: calc(var(--margin-x) + 28px) 100%, calc(var(--margin-x) + 28px) 100%; background-repeat: repeat-x;
+}
+.ruler::before { content: ''; position: absolute; left: calc(var(--margin-x) + 28px - 5px); top: 2px; border: 5px solid transparent; border-top: 8px solid var(--margin); }
+.ruler span { position: absolute; top: 1px; left: calc(var(--margin-x) + 28px + var(--i) * 80px + 3px); font-size: 0.62rem; color: var(--ink-3); font-weight: 600; line-height: 1; }
+
+/* ---------- the page itself ---------- */
+.page {
+  --pad-l: calc(var(--margin-x) + 52px);
+  flex: 1; min-height: 0; overflow: auto; padding: 1.4rem 1.8rem 7rem var(--pad-l); outline: none; scroll-behavior: smooth;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(90deg, transparent calc(var(--margin-x) + 27px), var(--margin) calc(var(--margin-x) + 27px) calc(var(--margin-x) + 29px), transparent calc(var(--margin-x) + 29px)),
+    repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px);
+  background-attachment: local;
+}
+:root[data-paper='grid'] .page { background-image: linear-gradient(90deg, transparent calc(var(--margin-x) + 27px), var(--margin) calc(var(--margin-x) + 27px) calc(var(--margin-x) + 29px), transparent calc(var(--margin-x) + 29px)), linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px); background-size: 100% 100%, 28px 28px, 28px 28px; }
+:root[data-paper='plain'] .page { background-image: none; }
+.page.turn { animation: turn 0.4s var(--ease); }
+@keyframes turn { from { opacity: 0; transform: translateX(26px) rotate(0.4deg); } to { opacity: 1; transform: none; } }
+
+/* ---------- music dock ---------- */
+.dock { position: fixed; right: 22px; bottom: 18px; z-index: 60; width: min(440px, calc(100vw - 24px)); display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.dock-bar { display: flex; align-items: center; gap: 0.3rem; padding: 0.4rem 0.5rem 0.4rem 0.7rem; background: var(--paper); border: 2px solid var(--ink); border-radius: 999px; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 16px 30px -10px rgba(0, 0, 0, 0.5); }
+.dock-bar .mbar { flex: 1; min-width: 0; }
+.dock-panel { background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 0.8rem; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 16px 30px -10px rgba(0, 0, 0, 0.5); display: none; max-height: min(70vh, 560px); overflow: auto; }
+.dock[data-open='true'] .dock-panel { display: block; animation: rise 0.25s var(--ease); }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+/* the players stay in the page (browsers pause hidden ones) and only show while the panel is open */
+.dock-stage { position: relative; aspect-ratio: 16/9; background: #0c1230; border-radius: 10px; overflow: hidden; margin-bottom: 0.7rem; }
+.dock[data-engine='spotify'] .dock-stage { aspect-ratio: auto; min-height: 90px; background: transparent; }
+.dock-stage iframe { width: 100%; height: 100%; border: 0; display: block; }
+#ytWrap, #spWrap { position: absolute; inset: 0; display: none; }
+.dock[data-engine='youtube'] #ytWrap { display: block; }
+.dock[data-engine='spotify'] #spWrap { display: block; position: static; }
+.dock-idle { position: absolute; inset: 0; margin: 0; display: grid; place-items: center; text-align: center; padding: 1rem; color: #aab4e6; font-size: 0.85rem; }
+.dock:not([data-engine='']) .dock-idle, .dock[data-engine='audio'] .dock-idle { display: none; }
+.dock[data-engine='audio'] .dock-stage { display: none; }
+.dock-note { font-size: 0.75rem; color: var(--ink-2); margin: 0.6rem 0 0; }
+/* when the panel is closed, keep the player alive but off-screen */
+.dock[data-open='false'] .dock-panel { display: block; position: fixed; left: -9999px; width: 360px; }
+
+/* ---------- toasts + canvas ---------- */
+#vfx { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 150; }
+#toasts { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); z-index: 250; display: grid; gap: 8px; justify-items: center; width: min(520px, calc(100vw - 24px)); pointer-events: none; }
+
+/* ---------- small screens: binder tabs become a bottom bar ---------- */
+@media (max-width: 820px) {
+  :root { --margin-x: 26px; }
+  .app { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; padding: 0; height: 100dvh; }
+  .sheet { border-radius: 0; grid-row: 1; }
+  .sheet::after, .ruler { display: none; }
+  .rail { grid-row: 2; flex-direction: row; padding: 0; gap: 0; justify-content: space-around; background: var(--desk-deep); padding-bottom: env(safe-area-inset-bottom); }
+  .tab { width: auto; flex: 1; border-radius: 0; transform: none; background: transparent; color: var(--desk-ink); box-shadow: none; padding: 8px 2px 6px; }
+  .tab:hover { transform: none; }
+  .tab[aria-current='page'] { width: auto; background: var(--tab); color: var(--ink); }
+  .tab[aria-current='page']::after { display: none; }
+  .page { --pad-l: calc(var(--margin-x) + 22px); padding: 1rem 1rem 8rem var(--pad-l); }
+  .page { background-image: linear-gradient(90deg, transparent calc(var(--margin-x) + 13px), var(--margin) calc(var(--margin-x) + 13px) calc(var(--margin-x) + 15px), transparent calc(var(--margin-x) + 15px)), repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px); }
+  .titlebar { padding: 0.5rem 0.7rem; }
+  .saved { display: none; }
+  .dock { right: 8px; left: 8px; width: auto; bottom: calc(66px + env(safe-area-inset-bottom)); }
+  #toasts { bottom: 150px; }
+}
+
+/* ---------- who is signed in: view only hides every editing control ---------- */
+.role-pill { display: inline-flex; align-items: center; padding: 0.15rem 0.6rem; border-radius: 999px; font: 800 0.7rem var(--display); letter-spacing: 0.06em; text-transform: uppercase; border: 1.5px solid var(--ink); background: #fff1c9; color: var(--ink); white-space: nowrap; }
+.role-pill[data-role='admin'] { background: #b2f7a0; }
+.role-pill[hidden] { display: none; }
+html[data-role='viewer'] .admin-only,
+html[data-role='viewer'] .scard .seg,
+html[data-role='viewer'] .scard .note-btn,
+html[data-role='viewer'] .seat-tools,
+html[data-role='viewer'] #tbUndo { display: none !important; }
+html[data-role='viewer'] .seat { cursor: default; }
