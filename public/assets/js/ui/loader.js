@@ -70,9 +70,11 @@ function step(s) {
 export function start(opts = {}) {
   const r = el();
   if (!r) return { progress() {}, text() {}, finish: () => Promise.resolve(), done: Promise.resolve() };
+  const o = { title: '', sub: '', kicker: '', color: '', min: 1000, intro: false, keep: false, auto: true, ...opts };
+  // index.html starts the intro animation before JavaScript loads. Reuse it instead of replaying it here.
+  const preloadedIntro = o.intro && !run && !r.hidden && r.dataset.mode === 'intro' && r.classList.contains('go') && !r.classList.contains('out');
   stop();
   clearTimeout(hideTimer);
-  const o = { title: '', sub: '', kicker: '', color: '', min: 1000, intro: false, keep: false, auto: true, ...opts };
   const s = {
     start: Date.now(), min: reduced() ? Math.min(o.min, 350) : o.min, shown: 0, target: o.auto ? 100 : 4,
     intro: o.intro, keep: o.keep, over: false, customSub: Boolean(o.sub), timer: 0, guard: 0, resolve() {},
@@ -84,9 +86,13 @@ export function start(opts = {}) {
   // a class's own colour shows as the spine of the paper label (the bar stays bright so it is readable on any desk colour)
   if (o.color && SAFE_COLOR.test(o.color)) r.style.setProperty('--ld-book', o.color); else r.style.removeProperty('--ld-book');
   setText({ title: o.title, kicker: o.kicker, sub: o.sub });
-  r.classList.remove('out', 'go');
-  void r.offsetWidth; // restart the entrance animation
-  r.classList.add('go');
+  if (!preloadedIntro) {
+    r.classList.remove('out', 'go');
+    void r.offsetWidth; // restart the entrance animation for later transitions
+    r.classList.add('go');
+  } else {
+    r.classList.remove('out');
+  }
   r.hidden = false;
   setInert(true);
   paint(0, s);
