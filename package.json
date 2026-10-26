@@ -8,5 +8,8 @@
     "dev": "node scripts/dev.mjs",
     "vercel:dev": "vercel dev"
   },
+  "dependencies": {
+    "@vercel/blob": "^2.8.2"
+  },
   "engines": { "node": ">=18" }
 }
