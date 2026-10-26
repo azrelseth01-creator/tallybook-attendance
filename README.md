@@ -15,7 +15,7 @@ It is a plain static site (no build step, no dependencies) plus three tiny serve
 - **Class library**: the Classes tab shows every class as a book on a shelf, with your teacher name and profile photo. Search and filter, sort into groups (folders such as a grade or a subject), favorite, archive, drag a book onto a group, and give any class its own optional password.
 - **Several classes**, a day note (sticky note), undo, and a student profile with a 14-week heat map.
 - **Settings**: customize your teacher display name and profile photo, school details, school days, attendance rules, desk colour, paper style, text size, sound and effects, backup and restore. Manage classes from the Classes tab or the title-bar picker.
-- **Optional background music**: paste YouTube, Spotify or .mp3 links. It is off by default; use the More menu or Settings to open its controls.
+- **Optional background music**: paste YouTube, Spotify or .mp3 links. It is off by default; the dock can shuffle through every queued item once before reshuffling, or repeat the current item or whole queue.
 - **Loading screen**: a short intro and lightweight transition screen while startup or class navigation completes. It no longer holds the app for an artificial minimum wait.
 - **Password screen**: the first thing you see. Two passwords: a normal one (view only) and an admin one (can edit). Use Show/Hide to check what you typed; the screen also warns when Caps Lock is on. See *Sign-in and access levels* below.
 - **Optional**: cloud sync across devices, installable as an app, works offline once opened.
@@ -105,7 +105,7 @@ Open http://localhost:3000. No `npm install` is needed. (`npx vercel dev` also w
 - YouTube: videos and playlists. Paste a playlist page link, or a video link that has `list=` in it (including youtu.be share links). Next and Previous move through the playlist's videos, and a blocked video is skipped on its own. Private playlists and auto-made Mixes (list starting with RD) will not play.
 - Spotify: tracks, albums, playlists, podcasts. Spotify controls its own volume, and plays full songs only when the browser is signed in to Spotify (otherwise 30 second previews).
 - Direct audio links (.mp3, .ogg, .wav) play in a plain audio player.
-- Browsers block sound until you tap or press a key once, so "Start playing on my first tap" begins on that first interaction.
+- Browsers block sound until you tap or press a key once, so "Start playing on my first tap" begins on that first interaction. The dock has Shuffle and Repeat controls; Repeat cycles through queue, current item, and off. For a Spotify album or playlist, use the Spotify player controls to shuffle or repeat tracks inside that playlist.
 
 ## Class library and class passwords
 
