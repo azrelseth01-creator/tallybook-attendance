@@ -37,11 +37,16 @@ export function bindToolbar(root) {
     bar.classList.toggle('playing', s.playing);
     const sh = store.getSetting('music.shuffle');
     const lp = store.getSetting('music.loop');
-    $('[data-m="shuffle"]').setAttribute('aria-pressed', String(sh));
+    const shuffleButton = $('[data-m="shuffle"]');
+    shuffleButton.setAttribute('aria-pressed', String(sh));
+    shuffleButton.setAttribute('aria-label', `Shuffle songs ${sh ? 'on' : 'off'}`);
+    shuffleButton.title = `Shuffle ${sh ? 'on' : 'off'} · click to toggle`;
     const lb = $('[data-m="loop"]');
+    const loopLabel = lp === 'one' ? 'Repeat current item' : lp === 'all' ? 'Repeat queue' : 'Repeat off';
     lb.setAttribute('aria-pressed', String(lp !== 'off'));
     lb.dataset.mode = lp;
-    lb.setAttribute('aria-label', lp === 'one' ? 'Repeat one track' : lp === 'all' ? 'Repeat the queue' : 'Repeat off');
+    lb.setAttribute('aria-label', `${loopLabel}. Click to change repeat mode`);
+    lb.title = `${loopLabel} · click to change`;
     const vol = $('[data-vol]');
     vol.value = store.getSetting('music.volume');
     const sp = item?.type === 'spotify';
@@ -55,8 +60,8 @@ export function bindToolbar(root) {
     if (m === 'toggle') music.toggle();
     if (m === 'next') music.next();
     if (m === 'prev') music.prev();
-    if (m === 'shuffle') { store.setSetting('music.shuffle', !store.getSetting('music.shuffle')); music.syncShuffle(); paint(); }
-    if (m === 'loop') { const order = ['all', 'one', 'off']; store.setSetting('music.loop', order[(order.indexOf(store.getSetting('music.loop')) + 1) % 3]); paint(); }
+    if (m === 'shuffle') music.toggleShuffle();
+    if (m === 'loop') music.cycleLoop();
   });
   $('[data-vol]').addEventListener('input', (e) => music.setVolume(Number(e.target.value)));
   const off = bus.on('music', paint);
