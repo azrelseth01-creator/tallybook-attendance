@@ -29,6 +29,8 @@ export async function openStudentDialog(student = null) {
       </div>
       <label class="field"><span>Full name</span>
         <input id="sfName" type="text" autocomplete="off" maxlength="60" value="${esc(draft.name)}" placeholder="e.g. Maya Santos" autofocus></label>
+      <label class="field"><span>Gender (optional; used for roster sorting)</span>
+        <select id="sfGender"><option value="">Not set</option><option value="female" ${student?.gender === 'female' ? 'selected' : ''}>Female</option><option value="male" ${student?.gender === 'male' ? 'selected' : ''}>Male</option></select></label>
       <div class="field"><span>Icon</span>
         <div class="pick-grid" id="sfIcons" role="radiogroup" aria-label="Icon">
           <button type="button" class="pick pick-init" data-icon="initials" aria-label="Use initials" title="Use initials">Aa</button>
@@ -93,6 +95,7 @@ export async function openStudentDialog(student = null) {
           if (!name) { toast('Type the student’s name first.', { type: 'error' }); dlg.querySelector('#sfName').focus(); return false; }
           const data = {
             name, icon: draft.icon, color: draft.color, photo: draft.photo || '',
+            gender: dlg.querySelector('#sfGender').value,
             guardian: dlg.querySelector('#sfGuardian').value.trim(), phone: dlg.querySelector('#sfPhone').value.trim(),
             notes: dlg.querySelector('#sfNotes').value.trim(),
           };
