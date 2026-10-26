@@ -1,8 +1,8 @@
 // GET /api/config
 // Public, non-secret settings that come from Vercel environment variables.
-// The browser uses them to seed a brand-new class book. Secrets (the passwords, Redis
-// tokens) are never returned; only whether they exist.
-import { int, text, list, redisCreds } from '../lib/env.js';
+// The browser uses them to seed a brand-new class book. Secrets (passwords and Blob credentials)
+// are never returned; only whether storage is configured.
+import { int, text, list, blobConfigured } from '../lib/env.js';
 
 export default function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -17,6 +17,6 @@ export default function handler(req, res) {
     lateToAbsent: int(process.env.LATE_TO_ABSENCE, 3),
     defaultMusic: list(process.env.DEFAULT_MUSIC_URLS),
     passwordRequired: true,
-    syncEnabled: Boolean(redisCreds()),
+    syncEnabled: Boolean(blobConfigured()),
   });
 }
