@@ -1,0 +1,12 @@
+{
+  "name": "tallybook",
+  "version": "1.0.0",
+  "description": "Tallybook: a class attendance register for teachers. Static site plus three small serverless functions, ready for Vercel.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "vercel:dev": "vercel dev"
+  },
+  "engines": { "node": ">=18" }
+}
