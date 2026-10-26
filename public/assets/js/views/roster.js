@@ -1,7 +1,7 @@
 // Roster: type names in by hand, paste a whole list, reorder, edit, archive.
 import * as store from '../core/store.js';
 import * as access from '../core/access.js';
-import { activeStudents, studentStats } from '../core/stats.js';
+import { activeStudents, byName, studentStats } from '../core/stats.js';
 import { esc, pct, plural } from '../core/utils.js';
 import { avatar } from '../ui/avatar.js';
 import { icon } from '../ui/icons.js';
@@ -35,8 +35,8 @@ export const roster = {
           <details class="more-wrap more-actions">
             <summary class="btn ghost small more-trigger">More ${icon('more', 15)}</summary>
             <div class="more-menu" aria-label="More roster options">
-              <button class="more-item admin-only" data-act="sortaz" type="button">Sort names A to Z</button>
-              <label class="more-select"><span>Sort view</span><select id="rsSort" aria-label="Sort the table"><option value="roster">Roster order</option><option value="absences">Most absences</option><option value="rate">Lowest attendance</option></select></label>
+              <button class="more-item admin-only" data-act="sortaz" type="button">Set saved roster order A to Z</button>
+              <label class="more-select"><span>Sort view</span><select id="rsSort" aria-label="Sort the roster"><option value="roster">Roster order</option><option value="name-az">Name: A to Z</option><option value="name-za">Name: Z to A</option><option value="male-female">Gender: Male to female</option><option value="female-male">Gender: Female to male</option><option value="absences">Most absences</option><option value="rate">Lowest attendance</option></select></label>
             </div>
           </details>
         </div>
@@ -54,6 +54,7 @@ export const roster = {
       input.value = '';
       input.focus();
     });
+    root.querySelector('#rsSort').value = sort;
     root.querySelector('#rsSort').addEventListener('change', (e) => { sort = e.target.value; paint(); });
     root.addEventListener('input', (e) => { if (e.target.id === 'rsSearch') { query = e.target.value.trim().toLowerCase(); paint(); } });
     root.addEventListener('click', onClick);
@@ -64,6 +65,21 @@ export const roster = {
   unmount() { root = null; },
 };
 
+function applySort(items) {
+  const rows = [...items];
+  if (sort === 'name-az') rows.sort((a, b) => byName(a.s, b.s));
+  if (sort === 'name-za') rows.sort((a, b) => byName(b.s, a.s));
+  if (sort === 'male-female' || sort === 'female-male') {
+    const first = sort === 'male-female' ? 'male' : 'female';
+    const second = first === 'male' ? 'female' : 'male';
+    const order = { [first]: 0, [second]: 1 };
+    rows.sort((a, b) => (order[String(a.s.gender || '').toLowerCase()] ?? 2) - (order[String(b.s.gender || '').toLowerCase()] ?? 2) || byName(a.s, b.s));
+  }
+  if (sort === 'absences') rows.sort((a, b) => b.st.effective - a.st.effective);
+  if (sort === 'rate') rows.sort((a, b) => (a.st.rate ?? 2) - (b.st.rate ?? 2));
+  return rows;
+}
+
 function paint() {
   const c = store.cls();
   const set = store.settings();
@@ -71,11 +87,9 @@ function paint() {
   const active = all.filter((x) => x.s.active !== false);
   const archived = all.filter((x) => x.s.active === false);
   root.querySelector('#rsSub').textContent = `${c.name}: ${plural(active.length, 'student')}${archived.length ? `, ${archived.length} archived` : ''}`;
-  const rows = [...active];
-  if (sort === 'absences') rows.sort((a, b) => b.st.effective - a.st.effective);
-  if (sort === 'rate') rows.sort((a, b) => (a.st.rate ?? 2) - (b.st.rate ?? 2));
+  const rows = applySort(active);
   const filteredRows = rows.filter(({ s }) => String(s.name).toLowerCase().includes(query));
-  const filteredArchived = archived.filter(({ s }) => String(s.name).toLowerCase().includes(query));
+  const filteredArchived = applySort(archived).filter(({ s }) => String(s.name).toLowerCase().includes(query));
   const box = root.querySelector('#rsTable');
   if (!c.students.length) {
     box.innerHTML = `<div class="empty"><div class="empty-art" aria-hidden="true">${icon('roster', 44)}</div><h2>No students yet</h2><p>Type a name above and press Enter. To add a whole class at once, choose Paste a class list and put one name on each line.</p></div>`;
@@ -117,7 +131,7 @@ async function onClick(e) {
   if (['edit', 'sortaz', 'delete', 'paste'].includes(act) && !access.guard()) return;
   if (act === 'edit' && student) return openStudentDialog(student);
   if (act === 'archived') { showArchived = !showArchived; return paint(); }
-  if (act === 'sortaz') { store.sortStudents(); sfx.play('page'); toast('Roster sorted A to Z.'); return; }
+  if (act === 'sortaz') { sort = 'roster'; root.querySelector('#rsSort').value = sort; store.sortStudents(); sfx.play('page'); toast('Roster order set to A to Z.'); return; }
   if (act === 'delete' && student) {
     const ok = await confirmBox({ title: `Remove ${student.name}?`, message: 'Their attendance history is removed too. To keep it, choose Edit and tick "Left the class" instead. You can undo right after.', confirmLabel: 'Remove student', danger: true });
     if (!ok) return;

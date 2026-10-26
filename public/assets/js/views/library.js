@@ -16,6 +16,7 @@ import * as sfx from '../services/audio.js';
 
 let root = null;
 let menuEl = null;
+let brandDanceTimer = 0;
 const ui = { view: 'all', q: '', subject: '', sort: 'recent', preview: null };
 
 const groupOf = (c) => store.groups().find((g) => g.id === c.groupId) || null;
@@ -31,6 +32,10 @@ function lastOpenedText(ms) {
   return `Opened ${new Date(ms).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}`;
 }
 
+function wordmarkLetters(name) {
+  return [...String(name)].map((char, i) => `<span class="lib-brand-letter" style="--letter:${Math.min(i, 16)}">${char === ' ' ? '&nbsp;' : esc(char)}</span>`).join('');
+}
+
 export const library = {
   mount(host) {
     root = host;
@@ -38,7 +43,7 @@ export const library = {
     root.innerHTML = `
       <div class="lib-shell">
         <aside class="lib-side" aria-label="Library">
-          <div class="lib-brand"><span class="lib-logo">${icon('book', 24)}</span><b>${esc(config.appName)}</b></div>
+          <div class="lib-brand"><span class="lib-logo">${icon('book', 24)}</span><button class="lib-brand-title" id="libBrandTitle" type="button" aria-label="${esc(config.appName)}"><span class="lib-brand-letters" aria-hidden="true">${wordmarkLetters(config.appName)}</span></button></div>
           <p class="lib-eyebrow">Workspace</p>
           <nav class="lib-nav" id="libNav" aria-label="Class lists"></nav>
           <p class="lib-eyebrow lib-eyebrow-row">Groups <button class="icon-btn admin-only" data-act="newgroup" aria-label="New group" title="New group">${icon('plus', 16)}</button></p>
@@ -80,6 +85,15 @@ export const library = {
           </div>
         </section>
       </div>`;
+    const brand = root.querySelector('.lib-brand');
+    root.querySelector('#libBrandTitle').addEventListener('click', () => {
+      clearTimeout(brandDanceTimer);
+      brand.classList.remove('dancing');
+      void brand.offsetWidth;
+      brand.classList.add('dancing');
+      sfx.play('success');
+      brandDanceTimer = setTimeout(() => brand.classList.remove('dancing'), 1400);
+    });
     root.querySelector('#libSort').value = ui.sort;
     root.querySelector('#libQ').value = ui.q;
     root.addEventListener('click', onClick);
@@ -92,7 +106,7 @@ export const library = {
     root.querySelector('#libQ').focus({ preventScroll: true });
   },
   update() { if (root) paint(); },
-  unmount() { closeMenu(); root = null; },
+  unmount() { closeMenu(); clearTimeout(brandDanceTimer); root = null; },
 };
 
 /* ---------- what is shown ---------- */
