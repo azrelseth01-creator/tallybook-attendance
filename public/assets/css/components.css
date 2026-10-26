@@ -232,11 +232,19 @@ dialog.dlg.closing .dlg-in { animation: popOut 0.14s ease forwards; }
 .mbar-title span { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mbar-title small { color: var(--ink-2); }
 .mbar-btns { display: flex; align-items: center; gap: 0.15rem; }
-.compact .mbar-btns [data-m='shuffle'], .compact .mbar-btns [data-m='loop'] { display: none; }
+.compact .mbar-title { min-width: 0; }
+.compact .mbar-btns [data-m='shuffle'], .compact .mbar-btns [data-m='loop'] { display: inline-grid; width: 30px; height: 30px; }
+@media (max-width: 480px) {
+  .compact .eq { display: none; }
+  .compact .mbar { gap: 0.12rem; }
+  .compact .mbar-btns { gap: 0; }
+  .compact .mbar-btns .icon-btn { width: 28px; height: 30px; }
+  .compact .play-btn { width: 34px; height: 34px; }
+}
 .play-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--ink); background: var(--hl); display: grid; place-items: center; padding: 0; box-shadow: 0 2px 0 var(--ink); }
 .play-btn:active { transform: translateY(2px); box-shadow: none; }
 [data-m][aria-pressed='true'] { color: var(--pen); background: var(--paper-2); }
-.loop-one { display: none; font-size: 0.55rem; position: absolute; }
+.loop-one { display: none; position: absolute; top: 3px; right: 5px; font-size: 0.55rem; line-height: 1; }
 [data-m='loop'] { position: relative; }
 [data-m='loop'][data-mode='one'] .loop-one { display: block; }
 .mbar-vol { display: flex; align-items: center; gap: 0.3rem; color: var(--ink-2); }
