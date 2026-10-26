@@ -238,8 +238,9 @@ dialog.dlg.closing .dlg-in { animation: popOut 0.14s ease forwards; }
   .compact .eq { display: none; }
   .compact .mbar { gap: 0.12rem; }
   .compact .mbar-btns { gap: 0; }
-  .compact .mbar-btns .icon-btn { width: 28px; height: 30px; }
-  .compact .play-btn { width: 34px; height: 34px; }
+  .compact .mbar-btns .icon-btn { width: 26px; height: 30px; }
+  .compact .play-btn { width: 32px; height: 32px; }
+  .compact .mbar .mbar-vol input { width: 42px; }
 }
 .play-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--ink); background: var(--hl); display: grid; place-items: center; padding: 0; box-shadow: 0 2px 0 var(--ink); }
 .play-btn:active { transform: translateY(2px); box-shadow: none; }
@@ -249,7 +250,8 @@ dialog.dlg.closing .dlg-in { animation: popOut 0.14s ease forwards; }
 [data-m='loop'][data-mode='one'] .loop-one { display: block; }
 .mbar-vol { display: flex; align-items: center; gap: 0.3rem; color: var(--ink-2); }
 .mbar-vol input { width: 84px; }
-.compact .mbar-vol { display: none; }
+.compact .mbar-vol { flex: none; gap: 0.15rem; }
+.compact .mbar-vol input { width: 64px; }
 .spin { width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--line-strong); border-top-color: var(--ink); animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .music-add { display: flex; gap: 0.5rem; margin: 0.7rem 0; }

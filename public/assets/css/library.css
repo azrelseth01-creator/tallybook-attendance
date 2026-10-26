@@ -6,7 +6,20 @@
 /* ---------- sidebar ---------- */
 .lib-side { display: flex; flex-direction: column; gap: 0.25rem; padding: 1.4rem 0.9rem 1rem; background: var(--desk-deep); color: var(--desk-ink); overflow: auto; }
 .lib-brand { display: flex; align-items: center; gap: 0.7rem; padding: 0 0.4rem 1.2rem; font: 800 1.45rem var(--display); color: #fff; }
-.lib-logo { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: var(--hl); color: var(--ink); }
+.lib-logo { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: var(--hl); color: var(--ink); transform-origin: center; }
+.lib-brand-title { display: inline-flex; align-items: center; border: 0; padding: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+.lib-brand-title:focus-visible { outline: 3px solid var(--hl); outline-offset: 3px; border-radius: 4px; }
+.lib-brand-letters { display: inline-flex; white-space: pre; }
+.lib-brand-letter { display: inline-block; transform-origin: center bottom; }
+.lib-brand-title:hover .lib-brand-letter { animation: lib-letter-hop 0.45s var(--ease) both; animation-delay: calc(var(--letter) * 28ms); }
+.lib-brand.dancing .lib-brand-letter { animation: lib-letter-dance 0.78s var(--ease) both; animation-delay: calc(var(--letter) * 38ms); }
+.lib-brand.dancing .lib-logo { animation: lib-book-dance 0.9s var(--ease) both; }
+@keyframes lib-letter-hop { 0%, 100% { transform: translateY(0); } 42% { transform: translateY(-9px) rotate(-5deg); } 72% { transform: translateY(1px) rotate(2deg); } }
+@keyframes lib-letter-dance { 0%, 100% { transform: translateY(0) rotate(0) scale(1); } 22% { transform: translateY(-8px) rotate(9deg) scale(1.08); } 46% { transform: translateY(0) rotate(-8deg); } 70% { transform: translateY(-4px) rotate(6deg); } }
+@keyframes lib-book-dance { 0%, 100% { transform: rotate(0) scale(1); } 25% { transform: rotate(-12deg) translateY(-4px); } 50% { transform: rotate(12deg) translateY(-2px); } 75% { transform: rotate(-8deg) translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) {
+  .lib-brand-title:hover .lib-brand-letter, .lib-brand.dancing .lib-brand-letter, .lib-brand.dancing .lib-logo { animation: none; }
+}
 .lib-eyebrow { margin: 1rem 0.5rem 0.3rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(223, 230, 255, 0.55); }
 .lib-eyebrow-row { display: flex; align-items: center; justify-content: space-between; }
 .lib-eyebrow-row .icon-btn { width: 26px; height: 26px; color: var(--desk-ink); }
