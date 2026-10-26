@@ -17,6 +17,9 @@ let spEnded = false;
 let suppressEnd = false;
 const now = { playing: false, loading: false, type: null, title: '', pos: null };
 let errorRun = 0; // consecutive playback errors, so an all-blocked queue cannot loop forever
+let shuffleBag = [];
+let shuffleKey = '';
+let shuffleHistory = [];
 
 export const state = () => ({ ...now, index: store.getSetting('music.index'), queue: store.getSetting('music.queue') });
 const emit = () => bus.emit('music', state());
@@ -128,6 +131,45 @@ export function move(i, dir) {
   const idx = store.getSetting('music.index');
   if (idx === i) store.setSetting('music.index', j); else if (idx === j) store.setSetting('music.index', i);
   store.setSetting('music.queue', queue);
+  emit();
+}
+
+function queueSignature(queue) { return queue.map((item) => item.id).join('|'); }
+
+function rebuildShuffleBag(currentIndex, resetHistory = true) {
+  const queue = store.getSetting('music.queue') || [];
+  const anchor = queue.length ? Math.max(0, Math.min(queue.length - 1, Number(currentIndex) || 0)) : -1;
+  shuffleKey = queueSignature(queue);
+  shuffleBag = Array.from({ length: queue.length }, (_, i) => i).filter((i) => i !== anchor);
+  for (let i = shuffleBag.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffleBag[i], shuffleBag[j]] = [shuffleBag[j], shuffleBag[i]];
+  }
+  if (resetHistory) shuffleHistory = anchor < 0 ? [] : [anchor];
+}
+
+function ensureShuffleBag(currentIndex) {
+  const queue = store.getSetting('music.queue') || [];
+  if (shuffleKey !== queueSignature(queue)) rebuildShuffleBag(currentIndex, true);
+}
+
+function setNativePlaylistShuffle(enabled) {
+  try { if (current()?.kind === 'playlist') yt?.setShuffle?.(Boolean(enabled)); } catch { /* not ready */ }
+}
+
+export function toggleShuffle() {
+  const enabled = !store.getSetting('music.shuffle');
+  store.setSetting('music.shuffle', enabled);
+  if (enabled) rebuildShuffleBag(store.getSetting('music.index'), true);
+  else { shuffleBag = []; shuffleKey = ''; shuffleHistory = []; }
+  setNativePlaylistShuffle(enabled);
+  emit();
+}
+
+export function cycleLoop() {
+  const order = ['all', 'one', 'off'];
+  const currentMode = store.getSetting('music.loop');
+  store.setSetting('music.loop', order[(order.indexOf(currentMode) + 1) % order.length]);
   emit();
 }
 
@@ -304,10 +346,18 @@ function playAudio(item) {
 /* ---------- transport ---------- */
 const current = () => store.getSetting('music.queue')[store.getSetting('music.index')];
 
-export async function play(i) {
+export async function play(i, { shuffleAdvance = false, fromHistory = false } = {}) {
   const queue = store.getSetting('music.queue');
   if (!queue.length) return;
-  const idx = Math.min(Math.max(i ?? store.getSetting('music.index'), 0), queue.length - 1);
+  const previousIndex = store.getSetting('music.index');
+  const idx = Math.min(Math.max(i ?? previousIndex, 0), queue.length - 1);
+  if (store.getSetting('music.shuffle')) {
+    ensureShuffleBag(previousIndex);
+    if (shuffleAdvance) {
+      if (shuffleHistory[shuffleHistory.length - 1] !== idx) shuffleHistory.push(idx);
+    } else if (!fromHistory && idx !== previousIndex) rebuildShuffleBag(idx, true);
+    else if (!shuffleHistory.length) rebuildShuffleBag(idx, true);
+  }
   store.setSetting('music.index', idx);
   await startItem(queue[idx]);
 }
@@ -342,15 +392,21 @@ export function next(auto = false) {
     if (pos && pos.i < pos.n - 1) { yt.nextVideo(); return; }
   }
   const idx = store.getSetting('music.index');
+  const shuffled = Boolean(store.getSetting('music.shuffle') && queue.length > 1);
   let n;
-  if (store.getSetting('music.shuffle') && queue.length > 1) {
-    do { n = Math.floor(Math.random() * queue.length); } while (n === idx);
+  if (shuffled) {
+    ensureShuffleBag(idx);
+    if (!shuffleBag.length) {
+      if (auto && store.getSetting('music.loop') === 'off') { now.playing = false; now.loading = false; emit(); return; }
+      rebuildShuffleBag(idx, true);
+    }
+    n = shuffleBag.shift();
   } else n = idx + 1;
   if (n >= queue.length) {
-    if (auto && store.getSetting('music.loop') === 'off') { now.playing = false; emit(); return; }
+    if (auto && store.getSetting('music.loop') === 'off') { now.playing = false; now.loading = false; emit(); return; }
     n = 0;
   }
-  return play(n);
+  return play(n, { shuffleAdvance: shuffled });
 }
 export function prev() {
   const queue = store.getSetting('music.queue');
@@ -360,6 +416,16 @@ export function prev() {
     if (pos && pos.i > 0) { yt.previousVideo(); return; }
   }
   const idx = store.getSetting('music.index');
+  if (store.getSetting('music.shuffle')) {
+    ensureShuffleBag(idx);
+    if (shuffleHistory.length > 1) {
+      const currentIndex = shuffleHistory.pop();
+      const previousIndex = shuffleHistory[shuffleHistory.length - 1];
+      shuffleBag.unshift(currentIndex);
+      return play(previousIndex, { fromHistory: true });
+    }
+    return play(idx); // restart the first item in this shuffle cycle
+  }
   return play(idx - 1 < 0 ? queue.length - 1 : idx - 1);
 }
 function onEnded() {
@@ -367,10 +433,7 @@ function onEnded() {
   return next(true);
 }
 
-/** Called when the Shuffle button changes, so a YouTube playlist that is already playing follows it. */
-export function syncShuffle() {
-  try { if (current()?.kind === 'playlist') yt?.setShuffle?.(Boolean(store.getSetting('music.shuffle'))); } catch { /* not ready */ }
-}
+
 
 export function setVolume(v) {
   store.setSetting('music.volume', v);
