@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Tallybook">
+  <rect width="64" height="64" rx="14" fill="#16214d"/>
+  <rect x="13" y="9" width="38" height="46" rx="4" fill="#fbfdff"/>
+  <rect x="13" y="9" width="8" height="46" rx="3" fill="#2b4bd6"/>
+  <circle cx="17" cy="19" r="1.6" fill="#16214d"/><circle cx="17" cy="32" r="1.6" fill="#16214d"/><circle cx="17" cy="45" r="1.6" fill="#16214d"/>
+  <path d="M26 19h20M26 32h20M26 45h20" stroke="#9db3f0" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M27 24.5v-9M31 24.5v-9M35 24.5v-9M39 24.5v-9M25 22.5l16-6" stroke="#d9384a" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+  <path d="m27 36 4 4.5L40 29" stroke="#12935b" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <rect x="40" y="42" width="12" height="6" rx="1" fill="#ffd84a" transform="rotate(-12 46 45)"/>
+</svg>
